@@ -10,18 +10,15 @@ import Foundation
 // inspired by "A Binary Coder for Swift by Mike Ash", but way simpler
 // https://www.mikeash.com/pyblog/friday-qa-2017-07-28-a-binary-coder-for-swift.html
 
-public enum /* namespace */ BinaryCoder
-{
-	public enum DecodingError: Error
-	{
+public enum /* namespace */ BinaryCoder {
+	public enum DecodingError: Error {
 		case prematureEndOfData
 	}
 
 	// support for Double
 	
 	@discardableResult // a consumer might not be interested in the number of bytes processed
-	public static func encode(payload: Double, into data: inout Data) throws -> /* follow MemoryLayout<T> for byte-count */ Int
-	{
+	public static func encode(payload: Double, into data: inout Data) throws -> /* follow MemoryLayout<T> for byte-count */ Int {
 		let byteCount = MemoryLayout<Double>.size
 
 		// converts a 64-bit double from the host's native byte order to a platform-independent format
@@ -34,12 +31,10 @@ public enum /* namespace */ BinaryCoder
 	}
 
 	@discardableResult
-	public static func decode(_ data: Data, at offset: Int, into payload: inout Double) throws -> Int
-	{
+	public static func decode(_ data: Data, at offset: Int, into payload: inout Double) throws -> Int {
 		let byteCount = MemoryLayout<Double>.size
 
-		if offset + byteCount > data.count
-		{
+		if offset + byteCount > data.count {
 			throw DecodingError.prematureEndOfData
 		}
 
@@ -63,8 +58,7 @@ public enum /* namespace */ BinaryCoder
 	// support for uuid_t
 
 	@discardableResult
-	public static func encode(payload: uuid_t, into data: inout Data) throws -> Int
-	{
+	public static func encode(payload: uuid_t, into data: inout Data) throws -> Int {
 		// use reflection to convert a tuple into an array
 		let uuidBytes = Mirror(reflecting: payload).children.map({$0.1 as! UInt8})
 
@@ -74,13 +68,11 @@ public enum /* namespace */ BinaryCoder
 	}
 
 	@discardableResult
-	public static func decode(_ data: Data, at offset: Int, into payload: inout uuid_t) throws -> Int
-	{
+	public static func decode(_ data: Data, at offset: Int, into payload: inout uuid_t) throws -> Int {
 		// use reflection to count a tuple
 		let byteCount = Int(Mirror(reflecting: payload).children.count)
 		
-		if offset + byteCount > data.count
-		{
+		if offset + byteCount > data.count {
 			throw DecodingError.prematureEndOfData
 		}
 
