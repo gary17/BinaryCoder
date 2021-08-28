@@ -1,7 +1,6 @@
 import Foundation
 
-struct TestCase
-{
+struct TestCase {
 	let number: Double
 	let id: UUID = UUID()
 }
@@ -19,27 +18,22 @@ var data = Data()
 
 // in
 
-for testCase in testCases
-{
+for testCase in testCases {
 	// 1 of 2: encode Double
 	
-	do
-	{
+	do {
 		try BinaryCoder.encode(payload: testCase.number, into: /* in/out */ &data)
 	}
-	catch
-	{
+	catch {
 		fatalError("encode failure")
 	}
 	
 	// 2 of 2: alternate encode with uuid_t
 
-	do
-	{
+	do {
 		try BinaryCoder.encode(payload: testCase.id.uuid, into: /* in/out */ &data)
 	}
-	catch
-	{
+	catch {
 		fatalError("encode failure")
 	}
 }
@@ -48,23 +42,19 @@ for testCase in testCases
 
 var offset: Int = 0
 
-for testCase in testCases
-{
+for testCase in testCases {
 	// 1 of 2: decode as Double
 	
-	do
-	{
+	do {
 		// a random Double between 0.0 and 1.0
 		var rhs = drand48()
 		
 		let byteCountOut: Int
 
-		do
-		{
+		do {
 			byteCountOut = try BinaryCoder.decode(data, at: offset, into: /* in/out */ &rhs)
 		}
-		catch
-		{
+		catch {
 			fatalError("decode failure")
 		}
 
@@ -76,18 +66,15 @@ for testCase in testCases
 	
 	// 2 of 2: decode as uuid_t
 	
-	do
-	{
+	do {
 		var rhs: uuid_t = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 		
 		let byteCountOut: Int
 		
-		do
-		{
+		do {
 			byteCountOut = try BinaryCoder.decode(data, at: offset, into: /* in/out */ &rhs)
 		}
-		catch
-		{
+		catch {
 			fatalError("decode failure")
 		}
 		
